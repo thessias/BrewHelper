@@ -223,7 +223,6 @@ export function createActions(
         waterAmountCumulativeMax: calcRatio * coffeeAmountG,
       },
       { type: "SWIRL" },
-      { type: "SCOOP" },
       { type: "WAIT", targetSeconds: 180 },
       { type: "FINISH" },
     ];
@@ -287,7 +286,6 @@ export function createActions(
         waterAmountCumulativeMax: calcRatio * coffeeAmountG,
       },
       { type: "SWIRL" },
-      { type: "SCOOP" },
       { type: "WAIT", targetSeconds: 180 },
       { type: "FINISH" },
     ];

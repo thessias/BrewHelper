@@ -1,5 +1,14 @@
 import React from "react";
-import "./App.css";
+import {
+  FormControl,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Stack,
+  TextField,
+} from "@mui/material";
 
 type CoffeeInputsProps = {
   coffeeAmount: number | null;
@@ -8,7 +17,7 @@ type CoffeeInputsProps = {
   handleCoffeeAmountChange: (
     event: React.ChangeEvent<HTMLInputElement>
   ) => void;
-  handleTechniqueChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  handleTechniqueChange: (event: SelectChangeEvent) => void;
   handleRatioChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
@@ -22,42 +31,69 @@ const CoffeeInputs = (props: CoffeeInputsProps) => {
     handleRatioChange,
   } = props;
   return (
-    <>
-      <label className="label">
-        Coffee amount (g):
-        <input
-          className="input"
-          type="number"
-          step="0.1"
-          value={coffeeAmount ?? ""}
-          onChange={handleCoffeeAmountChange}
-        />
-      </label>
-      <label className="label">
-        Technique:
-        <select
-          className="select"
+    <Stack
+      direction="column"
+      alignItems="center"
+      rowGap="24px"
+      sx={{
+        padding: "12px",
+      }}
+    >
+      <TextField
+        variant="outlined"
+        size="medium"
+        label="Coffee amount"
+        onChange={handleCoffeeAmountChange}
+        inputMode="numeric"
+        sx={{
+          fontSize: "20px",
+        }}
+        fullWidth
+        InputProps={{
+          inputMode: "numeric",
+          style: { fontSize: "20px" },
+          endAdornment: <InputAdornment position="end">g</InputAdornment>,
+        }}
+        value={coffeeAmount !== null ? "" + coffeeAmount : ""}
+      />
+
+      <FormControl size="medium" fullWidth>
+        <InputLabel id="technique-select-label">Technique</InputLabel>
+        <Select
+          labelId="technique-select-label"
+          id="technique-select"
           value={technique}
+          label="Technique"
           onChange={handleTechniqueChange}
+          sx={{
+            fontSize: "20px",
+            boxSizing: "border-box",
+          }}
+          fullWidth
         >
-          <option value="V60">V60 (standard)</option>
-          <option value="V60 1 cup">V60 (better 1 cup)</option>
-          <option value="Chemex">Chemex</option>
-          <option value="AeroPress">AeroPress</option>
-          <option value="French Press">French Press</option>
-        </select>
-      </label>
-      <label className="label">
-        Ratio (g/l):
-        <input
-          className="input"
-          type="number"
-          step="0.1"
-          value={ratio !== null ? "" + ratio : ""}
-          onChange={handleRatioChange}
-        />
-      </label>
-    </>
+          <MenuItem value="V60">V60 (standard)</MenuItem>
+          <MenuItem value="V60 1 cup">V60 (better 1 cup)</MenuItem>
+          <MenuItem value="Chemex">Chemex</MenuItem>
+          <MenuItem value="AeroPress">AeroPress</MenuItem>
+          <MenuItem value="French Press">French Press</MenuItem>
+        </Select>
+      </FormControl>
+
+      <TextField
+        variant="outlined"
+        size="medium"
+        label="Ratio"
+        onChange={handleRatioChange}
+        sx={{ fontSize: "20px" }}
+        fullWidth
+        InputProps={{
+          inputMode: "numeric",
+          style: { fontSize: "20px" },
+          endAdornment: <InputAdornment position="end">g/l</InputAdornment>,
+        }}
+        value={ratio !== null ? "" + ratio : ""}
+      />
+    </Stack>
   );
 };
 

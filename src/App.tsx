@@ -1,16 +1,60 @@
 import React, { useEffect, useState } from "react";
 import "./Steps";
-import "./App.css";
 import CoffeeInputs from "./CoffeeInputs";
 import { Step, createSteps } from "./Steps";
 import * as TechniqueConstants from "./TechniqueConstants";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import { Pause, PlayArrow, ReplayOutlined } from "@mui/icons-material";
+import {
+  Box,
+  Container,
+  SelectChangeEvent,
+  Stack,
+  ThemeProvider,
+} from "@mui/material";
+import "./theme";
+import { color_secondary_tiffany_blue, createComponentsTheme } from "./theme";
+import { Theme } from "@emotion/react";
 
 const App = () => {
-  const [coffeeAmount, setCoffeeAmount] = useState<number | null>(null);
-  const [technique, setTechnique] = useState<Technique>("V60");
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = ""; // Chrome requires this
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
+  const [coffeeAmount, setCoffeeAmount] = useState<number | null>(() => {
+    const storedCoffeeAmount = localStorage.getItem("coffeeAmount");
+    if (storedCoffeeAmount !== null && storedCoffeeAmount !== "") {
+      return parseFloat(storedCoffeeAmount);
+    }
+    return null;
+  });
+  const [technique, setTechnique] = useState<Technique>(() => {
+    const storedTechnique = localStorage.getItem("technique");
+    if (storedTechnique !== null && storedTechnique !== "") {
+      return storedTechnique as Technique;
+    }
+    return "V60";
+  });
   const [ratio, setRatio] = useState<number | null>(
     TechniqueConstants.TECHNIQUE_WATER_RATIOS[technique]
   );
+
+  useEffect(() => {
+    if (coffeeAmount !== null) {
+      localStorage.setItem("coffeeAmount", coffeeAmount!.toString());
+    }
+    localStorage.setItem("technique", technique);
+  }, [coffeeAmount, technique]);
 
   const handleCoffeeAmountChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -19,9 +63,7 @@ const App = () => {
     setCoffeeAmount(Number.isNaN(value) ? null : value);
   };
 
-  const handleTechniqueChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
+  const handleTechniqueChange = (event: SelectChangeEvent) => {
     const newTechnique = event.target.value as Technique;
     setTechnique(newTechnique);
     setRatio(TechniqueConstants.TECHNIQUE_WATER_RATIOS[newTechnique]);
@@ -77,77 +119,89 @@ const App = () => {
 
   const handleResetTimer = () => {
     setCurrentTime(-3);
-    handlePauseTimer();
   };
 
+  const theme = createComponentsTheme();
   return (
-    <div className="container">
-      <h1 className="title">Brewing Helper</h1>
-      <CoffeeInputs
-        coffeeAmount={coffeeAmount}
-        technique={technique}
-        ratio={ratio}
-        handleCoffeeAmountChange={handleCoffeeAmountChange}
-        handleTechniqueChange={handleTechniqueChange}
-        handleRatioChange={handleRatioChange}
-      ></CoffeeInputs>
+    <ThemeProvider theme={theme}>
+      <Container sx={{ backgroundColor: "primary_black" }}>
+        <Typography variant="h1" align="center" padding="16px">
+          Brewing Helper
+        </Typography>
 
-      {waterAmount !== null && (
-        <>
-          <p className="text">💧 {waterAmount.toFixed(0)} g 💧</p>
+        <CoffeeInputs
+          coffeeAmount={coffeeAmount}
+          technique={technique}
+          ratio={ratio}
+          handleCoffeeAmountChange={handleCoffeeAmountChange}
+          handleTechniqueChange={handleTechniqueChange}
+          handleRatioChange={handleRatioChange}
+        ></CoffeeInputs>
 
-          {coffeeAmount !== null && ratio !== null && (
-            <Instructions
-              technique={technique}
-              coffeeAmount={coffeeAmount}
-              currentTime={currentTime}
-              ratio={ratio}
-            />
-          )}
+        {waterAmount !== null && (
+          <>
+            <Typography variant="h3" align="center">
+              💧 {waterAmount.toFixed(2)} g 💧
+            </Typography>
 
-          {/* <div className="waterCalc">
+            {coffeeAmount !== null && ratio !== null && (
+              <Instructions
+                technique={technique}
+                coffeeAmount={coffeeAmount}
+                currentTime={currentTime}
+                ratio={ratio}
+                theme={theme}
+              />
+            )}
+
+            {/* <div className="waterCalc">
               Add 💧 now:{currentWaterAdded}
             </div>
             <div className="waterCalc">
               Total💧 now:{currentCumulativeWater}
             </div> */}
-
-          <div className="buttons">
-            <button className="buttonStart" onClick={handleTimerClick}>
-              {isTimerRunning ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="48"
-                  viewBox="0 96 960 960"
-                  width="48"
-                >
-                  <path d="M564 902V250h224v652H564Zm-392 0V250h224v652H172Z" />
-                </svg>
-              ) : (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="48"
-                  viewBox="0 96 960 960"
-                  width="48"
-                >
-                  <path d="M295 899V247l512 326-512 326Z" />
-                </svg>
-              )}
-            </button>
-            <button className="buttonReset" onClick={handleResetTimer}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="48"
-                viewBox="0 96 960 960"
-                width="48"
+            <Stack
+              direction="row"
+              columnGap="24px"
+              alignItems="center"
+              justifyContent="center"
+              paddingBottom="24px"
+            >
+              <Button
+                variant="contained"
+                color="primary_dark_cyan"
+                sx={{
+                  borderRadius: "40px",
+                  padding: "20px",
+                }}
+                onClick={handleTimerClick}
               >
-                <path d="M451 960q-133-11-224.5-109T135 618q0-79 35.5-149.5T270 351l67 67q-50 32-79 86t-29 114q0 97 63.5 167T451 865v95Zm60 0v-95q97-11 159-80.5T732 618q0-100-67.5-172T497 368h-23l64 65-51 51-168-168 168-169 51 51-75 75h24q142 0 241 101.5T827 618q0 135-91.5 233T511 960Z" />
-              </svg>
-            </button>
-          </div>
-        </>
-      )}
-    </div>
+                {isTimerRunning ? (
+                  <Pause fontSize="large" color="primary_black"></Pause>
+                ) : (
+                  <PlayArrow fontSize="large" color="primary_black"></PlayArrow>
+                )}
+              </Button>
+
+              <Button
+                variant="contained"
+                color="primary_alloy_orange"
+                sx={{
+                  borderRadius: "40px",
+                  padding: "20px",
+                }}
+                onClick={handleResetTimer}
+              >
+                <ReplayOutlined
+                  fontSize="large"
+                  color="primary_black"
+                ></ReplayOutlined>
+              </Button>
+            </Stack>
+          </>
+        )}
+      </Container>
+    </ThemeProvider>
   );
 };
 export default App;
@@ -157,6 +211,7 @@ interface InstructionsProps {
   coffeeAmount: number;
   currentTime: number;
   ratio: number;
+  theme: Theme;
 }
 
 function Instructions(props: InstructionsProps) {
@@ -193,18 +248,51 @@ function Instructions(props: InstructionsProps) {
 
   return (
     <>
-      <p className="text">⏱️ {targetTime} s ⏱️</p>
-      <div className="timer"> {props.currentTime}</div>
+      <Typography
+        variant="h3"
+        align="center"
+        paddingTop="16px"
+        paddingBottom="16px"
+      >
+        ⏱️ {targetTime} s ⏱️
+      </Typography>
+      <Container maxWidth="sm">
+        <Stack
+          sx={{
+            bgcolor: color_secondary_tiffany_blue,
+            borderRadius: "40px",
+            padding: "10px",
+          }}
+        >
+          <Typography variant="h3" align="center">
+            {props.currentTime}
+          </Typography>
+        </Stack>
+      </Container>
 
-      <p className="text">Time remaining: {remainingTime} seconds</p>
+      <Typography
+        variant="h4"
+        align="center"
+        paddingTop="16px"
+        paddingBottom="16px"
+      >
+        Time remaining: {remainingTime} seconds
+      </Typography>
 
-      <div className="currentInstruction">
-        Now: {stepToTexts(currentStep)} <br></br>
-      </div>
-
-      {nextStep !== null && (
-        <div className="nextInstruction">Next: {stepToTexts(nextStep)}</div>
-      )}
+      <Container>
+        <Box
+          sx={{
+            padding: "10px",
+            textAlign: "center",
+          }}
+        >
+          <Typography variant="h4"> Now: {stepToTexts(currentStep)}</Typography>
+          <br></br>
+          {nextStep !== null && (
+            <Typography variant="h5">Next: {stepToTexts(nextStep)}</Typography>
+          )}
+        </Box>
+      </Container>
     </>
   );
 }
