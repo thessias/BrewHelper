@@ -141,7 +141,7 @@ const App = () => {
         {waterAmount !== null && (
           <>
             <Typography variant="h3" align="center">
-              💧 {waterAmount.toFixed(2)} g 💧
+              💧 {+waterAmount.toFixed(2)} g 💧
             </Typography>
 
             {coffeeAmount !== null && ratio !== null && (
