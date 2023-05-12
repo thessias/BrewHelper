@@ -181,7 +181,7 @@ export function createComponentsTheme() {
         lineHeight: "20px",
       },
       h1: {
-        fontSize: "30px",
+        fontSize: "25px",
         color: color_primary_dark_cyan,
       },
       h2: {
@@ -197,7 +197,7 @@ export function createComponentsTheme() {
         color: color_primary_black,
       },
       h5: {
-        fontSize: "20px",
+        fontSize: "18px",
         color: color_black_opacity65,
       },
     },

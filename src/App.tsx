@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./Steps";
 import CoffeeInputs from "./CoffeeInputs";
 import { Step, createSteps } from "./Steps";
@@ -15,7 +15,6 @@ import {
 } from "@mui/material";
 import "./theme";
 import { color_secondary_tiffany_blue, createComponentsTheme } from "./theme";
-import { Theme } from "@emotion/react";
 
 const App = () => {
   useEffect(() => {
@@ -108,6 +107,10 @@ const App = () => {
   const [isTimerRunning, setIsTimerRunning] = useState(false);
 
   const handleTimerClick = () => {
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: "smooth",
+    });
     if (isTimerRunning) {
       handlePauseTimer();
       setIsTimerRunning(false);
@@ -122,10 +125,16 @@ const App = () => {
   };
 
   const theme = createComponentsTheme();
+
   return (
     <ThemeProvider theme={theme}>
-      <Container sx={{ backgroundColor: "primary_black" }}>
-        <Typography variant="h1" align="center" padding="16px">
+      <Container>
+        <Typography
+          variant="h1"
+          align="center"
+          paddingTop="16px"
+          paddingBottom="8px"
+        >
           Brewing Helper
         </Typography>
 
@@ -140,17 +149,13 @@ const App = () => {
 
         {waterAmount !== null && (
           <>
-            <Typography variant="h3" align="center">
-              💧 {+waterAmount.toFixed(2)} g 💧
-            </Typography>
-
             {coffeeAmount !== null && ratio !== null && (
               <Instructions
                 technique={technique}
                 coffeeAmount={coffeeAmount}
                 currentTime={currentTime}
                 ratio={ratio}
-                theme={theme}
+                waterAmount={waterAmount}
               />
             )}
 
@@ -211,7 +216,7 @@ interface InstructionsProps {
   coffeeAmount: number;
   currentTime: number;
   ratio: number;
-  theme: Theme;
+  waterAmount: number;
 }
 
 function Instructions(props: InstructionsProps) {
@@ -220,6 +225,8 @@ function Instructions(props: InstructionsProps) {
     props.coffeeAmount,
     props.ratio
   );
+
+  const lastStepRef = useRef(null);
 
   let currentStepIndex = createdSteps.findIndex(
     (o) => o.targetTime === null || props.currentTime < o.targetTime
@@ -246,15 +253,22 @@ function Instructions(props: InstructionsProps) {
   );
   const remainingTime = targetTime - props.currentTime;
 
+  useEffect(() => {
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [currentStep, nextStep]);
+
   return (
     <>
       <Typography
-        variant="h3"
+        variant="h4"
         align="center"
-        paddingTop="16px"
+        paddingTop="px"
         paddingBottom="16px"
       >
-        ⏱️ {targetTime} s ⏱️
+        💧 {+props.waterAmount.toFixed(2)} g 💧 | ⏱️ {targetTime} s ⏱️
       </Typography>
       <Container maxWidth="sm">
         <Stack
@@ -289,7 +303,10 @@ function Instructions(props: InstructionsProps) {
           <Typography variant="h4"> Now: {stepToTexts(currentStep)}</Typography>
           <br></br>
           {nextStep !== null && (
-            <Typography variant="h5">Next: {stepToTexts(nextStep)}</Typography>
+            <Typography variant="h5" ref={lastStepRef}>
+              {" "}
+              Next: {stepToTexts(nextStep)}
+            </Typography>
           )}
         </Box>
       </Container>
