@@ -44,13 +44,12 @@ const CoffeeInputs = (props: CoffeeInputsProps) => {
         size="medium"
         label="Coffee amount"
         onChange={handleCoffeeAmountChange}
-        inputMode="numeric"
+        type="number"
         sx={{
           fontSize: "20px",
         }}
         fullWidth
         InputProps={{
-          inputMode: "numeric",
           style: { fontSize: "20px" },
           endAdornment: <InputAdornment position="end">g</InputAdornment>,
         }}
@@ -83,11 +82,11 @@ const CoffeeInputs = (props: CoffeeInputsProps) => {
         variant="outlined"
         size="medium"
         label="Ratio"
+        type="number"
         onChange={handleRatioChange}
         sx={{ fontSize: "20px" }}
         fullWidth
         InputProps={{
-          inputMode: "numeric",
           style: { fontSize: "20px" },
           endAdornment: <InputAdornment position="end">g/l</InputAdornment>,
         }}
