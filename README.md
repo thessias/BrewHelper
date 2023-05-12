@@ -2,6 +2,8 @@
 
 ## _Simple app that makes coffee brewing easier_
 
+Live version available here: [puse6.com/brewer/](https://puse6.com/brewer/)
+
 #### You need to
 
 - set how much ground coffee you want to use (in grams)
