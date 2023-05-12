@@ -265,7 +265,7 @@ function Instructions(props: InstructionsProps) {
       <Typography
         variant="h4"
         align="center"
-        paddingTop="px"
+        paddingTop="16px"
         paddingBottom="16px"
       >
         💧 {+props.waterAmount.toFixed(2)} g 💧 | ⏱️ {targetTime} s ⏱️

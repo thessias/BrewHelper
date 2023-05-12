@@ -200,6 +200,10 @@ export function createComponentsTheme() {
         fontSize: "18px",
         color: color_black_opacity65,
       },
+      caption: {
+        fontSize: "13px",
+        color: color_secondary_rust,
+      },
     },
     components: {
       MuiTypography: {
