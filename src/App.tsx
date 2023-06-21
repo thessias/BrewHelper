@@ -5,16 +5,25 @@ import { Step, createSteps } from "./Steps";
 import * as TechniqueConstants from "./TechniqueConstants";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { Pause, PlayArrow, ReplayOutlined } from "@mui/icons-material";
+import {
+  Coffee,
+  Pause,
+  PlayArrow,
+  ReplayOutlined,
+  WaterDrop,
+} from "@mui/icons-material";
 import {
   Box,
   Container,
   SelectChangeEvent,
   Stack,
   ThemeProvider,
+  ToggleButton,
+  ToggleButtonGroup,
 } from "@mui/material";
 import "./theme";
 import { color_secondary_tiffany_blue, createComponentsTheme } from "./theme";
+import PPMForm from "./PPMForm";
 
 const App = () => {
   useEffect(() => {
@@ -80,6 +89,17 @@ const App = () => {
     setRatio(value);
   };
 
+  const [mode, setMode] = useState<string | null>("coffee");
+
+  const handleMode = (
+    event: React.MouseEvent<HTMLElement>,
+    newMode: string | null
+  ) => {
+    if (newMode !== null) {
+      setMode(newMode);
+    }
+  };
+
   const waterAmount =
     coffeeAmount !== null && ratio !== null
       ? (coffeeAmount * 1000) / ratio
@@ -138,73 +158,104 @@ const App = () => {
           Brewing Helper
         </Typography>
 
-        <CoffeeInputs
-          coffeeAmount={coffeeAmount}
-          technique={technique}
-          ratio={ratio}
-          handleCoffeeAmountChange={handleCoffeeAmountChange}
-          handleTechniqueChange={handleTechniqueChange}
-          handleRatioChange={handleRatioChange}
-        ></CoffeeInputs>
-
-        {waterAmount !== null && (
-          <>
-            {coffeeAmount !== null && ratio !== null && (
-              <Instructions
-                technique={technique}
+        <Stack direction="row" justifyContent="center" paddingBottom={2}>
+          <ToggleButtonGroup
+            value={mode}
+            exclusive
+            onChange={handleMode}
+            aria-label="Mode"
+            color="secondary"
+          >
+            <ToggleButton value="coffee" aria-label="coffee">
+              <Coffee />
+            </ToggleButton>
+            <ToggleButton value="water" aria-label="water">
+              <WaterDrop />
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </Stack>
+        <>
+          {mode === "coffee" && (
+            <>
+              <CoffeeInputs
                 coffeeAmount={coffeeAmount}
-                currentTime={currentTime}
+                technique={technique}
                 ratio={ratio}
-                waterAmount={waterAmount}
-              />
-            )}
+                handleCoffeeAmountChange={handleCoffeeAmountChange}
+                handleTechniqueChange={handleTechniqueChange}
+                handleRatioChange={handleRatioChange}
+              ></CoffeeInputs>
 
-            {/* <div className="waterCalc">
+              {waterAmount !== null && (
+                <>
+                  {coffeeAmount !== null && ratio !== null && (
+                    <Instructions
+                      technique={technique}
+                      coffeeAmount={coffeeAmount}
+                      currentTime={currentTime}
+                      ratio={ratio}
+                      waterAmount={waterAmount}
+                    />
+                  )}
+
+                  {/* <div className="waterCalc">
               Add 💧 now:{currentWaterAdded}
             </div>
             <div className="waterCalc">
               Total💧 now:{currentCumulativeWater}
             </div> */}
-            <Stack
-              direction="row"
-              columnGap="24px"
-              alignItems="center"
-              justifyContent="center"
-              paddingBottom="24px"
-            >
-              <Button
-                variant="contained"
-                color="primary_dark_cyan"
-                sx={{
-                  borderRadius: "40px",
-                  padding: "20px",
-                }}
-                onClick={handleTimerClick}
-              >
-                {isTimerRunning ? (
-                  <Pause fontSize="large" color="primary_black"></Pause>
-                ) : (
-                  <PlayArrow fontSize="large" color="primary_black"></PlayArrow>
-                )}
-              </Button>
+                  <Stack
+                    direction="row"
+                    columnGap="24px"
+                    alignItems="center"
+                    justifyContent="center"
+                    paddingBottom="24px"
+                  >
+                    <Button
+                      variant="contained"
+                      color="primary_dark_cyan"
+                      sx={{
+                        borderRadius: "40px",
+                        padding: "20px",
+                      }}
+                      onClick={handleTimerClick}
+                    >
+                      {isTimerRunning ? (
+                        <Pause fontSize="large" color="primary_black"></Pause>
+                      ) : (
+                        <PlayArrow
+                          fontSize="large"
+                          color="primary_black"
+                        ></PlayArrow>
+                      )}
+                    </Button>
 
-              <Button
-                variant="contained"
-                color="primary_alloy_orange"
-                sx={{
-                  borderRadius: "40px",
-                  padding: "20px",
-                }}
-                onClick={handleResetTimer}
-              >
-                <ReplayOutlined
-                  fontSize="large"
-                  color="primary_black"
-                ></ReplayOutlined>
-              </Button>
-            </Stack>
-          </>
-        )}
+                    <Button
+                      variant="contained"
+                      color="primary_alloy_orange"
+                      sx={{
+                        borderRadius: "40px",
+                        padding: "20px",
+                      }}
+                      onClick={handleResetTimer}
+                    >
+                      <ReplayOutlined
+                        fontSize="large"
+                        color="primary_black"
+                      ></ReplayOutlined>
+                    </Button>
+                  </Stack>
+                </>
+              )}
+            </>
+          )}
+
+          {mode === "water" && (
+            <>
+              <PPMForm />
+            </>
+          )}
+        </>
       </Container>
     </ThemeProvider>
   );

@@ -132,6 +132,10 @@ export function createComponentsTheme() {
         main: color_primary_dark_cyan,
         contrastText: color_secondary_rust,
       },
+      secondary: {
+        main: color_secondary_midnight_green,
+        contrastText: color_primary_vanilla,
+      },
       secondary_midnight_green: {
         main: color_secondary_midnight_green,
         contrastText: color_primary_vanilla,
