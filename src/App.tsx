@@ -20,6 +20,7 @@ import {
   ThemeProvider,
   ToggleButton,
   ToggleButtonGroup,
+  Tooltip,
 } from "@mui/material";
 import "./theme";
 import { color_secondary_tiffany_blue, createComponentsTheme } from "./theme";
@@ -167,10 +168,14 @@ const App = () => {
             color="secondary"
           >
             <ToggleButton value="coffee" aria-label="coffee">
-              <Coffee />
+              <Tooltip title="Coffee brewing">
+                <Coffee />
+              </Tooltip>
             </ToggleButton>
             <ToggleButton value="water" aria-label="water">
-              <WaterDrop />
+              <Tooltip title="Water mixing">
+                <WaterDrop />
+              </Tooltip>
             </ToggleButton>
           </ToggleButtonGroup>
         </Stack>

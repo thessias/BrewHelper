@@ -3,6 +3,7 @@ import {
   InputAdornment,
   Stack,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
@@ -68,6 +69,60 @@ const PPMForm: React.FC = () => {
     setTargetVolume(value);
   };
 
+  const [concentratePPMWarning, setConcentratePPMWarning] = useState("");
+  const [diluentPPMWarning, setDiluentPPMWarning] = useState("");
+  const [targetPPMWarning, setTargetPPMWarning] = useState("");
+  const [targetVolumeWarning, setTargetVolumeWarning] = useState("");
+
+  useEffect(() => {
+    setConcentratePPMWarning("");
+    setDiluentPPMWarning("");
+    setTargetPPMWarning("");
+    setTargetVolumeWarning("");
+    if (concentratePPM !== undefined && concentratePPM < 250) {
+      setConcentratePPMWarning("Very low PPM for a concentrate. Are you sure?");
+    }
+
+    if (diluentPPM !== undefined && diluentPPM > 25) {
+      setDiluentPPMWarning(
+        "It's pretty high ppm for diluent; consider using cleaner water."
+      );
+    }
+    if (targetPPM !== undefined && targetPPM < 30) {
+      setTargetPPMWarning("Very low ppm, the resulting coffee may be flat.");
+    }
+    if (targetPPM !== undefined && targetPPM > 250) {
+      setTargetPPMWarning("Very high ppm, the resulting coffee may be harsh.");
+    }
+    if (targetVolume !== undefined && targetVolume > 1000) {
+      setTargetPPMWarning("Are you sure you need that much water?");
+    }
+    if (
+      concentratePPM !== undefined &&
+      diluentPPM !== undefined &&
+      concentratePPM < diluentPPM
+    ) {
+      setConcentratePPMWarning("Concentrate ppm is LESS than diluent ppm!");
+      setDiluentPPMWarning("Diluent ppm is MORE than concentrate ppm!");
+    }
+    if (
+      concentratePPM !== undefined &&
+      targetPPM !== undefined &&
+      concentratePPM < targetPPM
+    ) {
+      setConcentratePPMWarning("Concentrate ppm is LESS than target ppm!");
+      setTargetPPMWarning("Target ppm is MORE than concentrate ppm!");
+    }
+    if (
+      diluentPPM !== undefined &&
+      targetPPM !== undefined &&
+      targetPPM < diluentPPM
+    ) {
+      setDiluentPPMWarning("Diluent ppm is MORE than target ppm!");
+      setTargetPPMWarning("Target ppm is LESS than diluent ppm!");
+    }
+  }, [concentratePPM, diluentPPM, targetPPM, targetVolume]);
+
   return (
     <>
       <Stack direction="column" alignItems="center" rowGap="12px">
@@ -87,41 +142,55 @@ const PPMForm: React.FC = () => {
           }}
           value={concentratePPM}
         />
+        {concentratePPMWarning && (
+          <Typography variant="caption">{concentratePPMWarning}</Typography>
+        )}
 
-        <TextField
-          variant="outlined"
-          size="medium"
-          label="Diluent ppm"
-          onChange={handleDiluentPPMChange}
-          type="number"
-          sx={{
-            fontSize: "20px",
-          }}
-          fullWidth
-          InputProps={{
-            style: { fontSize: "20px" },
-            endAdornment: <InputAdornment position="end">ppm</InputAdornment>,
-          }}
-          value={diluentPPM}
-        />
+        <Tooltip title="distilled water should be under 10 pmm; RO water under 25 ppm">
+          <TextField
+            variant="outlined"
+            size="medium"
+            label="Diluent ppm"
+            onChange={handleDiluentPPMChange}
+            type="number"
+            sx={{
+              fontSize: "20px",
+            }}
+            fullWidth
+            InputProps={{
+              style: { fontSize: "20px" },
+              endAdornment: <InputAdornment position="end">ppm</InputAdornment>,
+            }}
+            value={diluentPPM}
+          />
+        </Tooltip>
+        {diluentPPMWarning && (
+          <Typography variant="caption">{diluentPPMWarning}</Typography>
+        )}
 
-        <TextField
-          variant="outlined"
-          size="medium"
-          label="Target ppm"
-          onChange={handleTargetPPMChange}
-          type="number"
-          sx={{
-            fontSize: "20px",
-          }}
-          fullWidth
-          InputProps={{
-            style: { fontSize: "20px" },
-            endAdornment: <InputAdornment position="end">ppm</InputAdornment>,
-          }}
-          value={targetPPM}
-        />
+        <br></br>
+        <Tooltip title="SCA recommends 150 ppm; acceptable range is 75-250 ppm">
+          <TextField
+            variant="outlined"
+            size="medium"
+            label="Target ppm"
+            onChange={handleTargetPPMChange}
+            type="number"
+            sx={{
+              fontSize: "20px",
+            }}
+            fullWidth
+            InputProps={{
+              style: { fontSize: "20px" },
+              endAdornment: <InputAdornment position="end">ppm</InputAdornment>,
+            }}
+            value={targetPPM}
+          />
+        </Tooltip>
 
+        {targetPPMWarning && (
+          <Typography variant="caption">{targetPPMWarning}</Typography>
+        )}
         <TextField
           variant="outlined"
           size="medium"
@@ -138,6 +207,10 @@ const PPMForm: React.FC = () => {
           }}
           value={targetVolume}
         />
+        {targetVolumeWarning && (
+          <Typography variant="caption">{targetVolumeWarning}</Typography>
+        )}
+
         <Container maxWidth="sm">
           <Stack
             sx={{
