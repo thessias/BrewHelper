@@ -2,8 +2,11 @@
 
 ## _Simple app that makes coffee brewing easier_
 
-Live version available here: [puse6.com/brewer/](https://puse6.com/brewer/)
+Live version available here: [pokorna.sk/brewer/](https://pokorna.sk/brewer/)
 
+### The app has 2 modes - for alternative brewing and water mixing 
+
+## Brewing
 #### You need to
 
 - set how much ground coffee you want to use (in grams)
@@ -18,7 +21,7 @@ Live version available here: [puse6.com/brewer/](https://puse6.com/brewer/)
 
 #### then you just need to press Start button and follow the instructions.
 
-### Following methods are supported:
+#### Following methods are supported:
 
 - V60 (standard)
 - V60 (better 1 cup) - based on [James Hoffman's Better 1 Cup V60 video](https://www.youtube.com/watch?v=1oB1oDrDkHM)
@@ -27,3 +30,16 @@ Live version available here: [puse6.com/brewer/](https://puse6.com/brewer/)
 - French Press
 
 All instructions are based on recommendations from James Hoffman's book [How To Make The Best Coffee At Home](https://www.howtomakethebest.coffee/)
+
+## Water mixing
+
+#### You need to
+
+- set concentrate ppm
+- set diluent ppm
+- set desired ppm
+- set desired amount of water
+
+#### the app will
+
+- calculate the amount of concentrate and diluent you need to mix to get desired water
